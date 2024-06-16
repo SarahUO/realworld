@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install  # Install dependencies
+
+  build:
+    commands:
+      - npm run build  # Build the application
+      - npm test  # Run unit tests
+      # Add any additional commands for integration tests or other build steps here
+
+artifacts:
+  files:
+    - '**/*'  # Include all files in the artifact
+  base-directory: dist  # Adjust based on your application's build output directory
+
+cache:
+  paths:
+    - node_modules/  # Cache node_modules to speed up builds
