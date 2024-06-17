@@ -10,28 +10,15 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Get node version
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
-
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            **/node_modules
-          # Adding node version as cache key
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
-
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --no-audit --prefer-offline --progress=false
 
       - name: Check prettier
@@ -47,12 +34,10 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
         language: ['javascript', 'typescript']
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -72,29 +57,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [linting, codeql]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Get node version
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
-
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            **/node_modules
-          # Adding node version as cache key
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
-
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --no-audit --prefer-offline --progress=false
+
       - name: Check unit tests
         run: npm run test --ci --lastCommit --maxWorkers=50%
 
@@ -103,29 +76,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [linting, codeql]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Get node version
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
-
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            **/node_modules
-          # Adding node version as cache key
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
-
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --no-audit --prefer-offline --progress=false
+
       - name: Check unit tests
         run: echo "No unit tests for demo"
 
@@ -134,14 +95,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [linting, codeql]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: Install dependencies
         run: npm ci --no-audit --prefer-offline --progress=false
-      - name: Check api tests
+
+      - name: Check API tests
         run: npx nx e2e api-testing-cypress
 
   api_testing_playwright:
@@ -149,30 +114,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [linting, codeql]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Get node version
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
-
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            **/node_modules
-          # Adding node version as cache key
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
-
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --no-audit --prefer-offline --progress=false
-      - name: Check api tests
+
+      - name: Check API tests
         run: npx nx e2e api-testing-playwright
 
   accessibility_demo:
@@ -180,22 +133,89 @@ jobs:
     runs-on: ubuntu-latest
     needs: [linting, codeql, unit_testing_demo, deploy_preview_demo]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        id: setup-node
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Get node version
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline --progress=false
 
-      - name: Get node_modules cache
-        uses: actions/cache@v3
-        id: cache
+      - name: Check accessibility tests
+        run: echo "No accessibility tests"
+
+  build_documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    needs: [linting, codeql]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          path: |
-            **/node_modules
-          # Adding node version as cache key
-          key: $
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline --progress=false
+
+      - name: Build documentation
+        run: npx nx build documentation
+
+  chromatic:
+    name: Chromatic Visual Testing
+    runs-on: ubuntu-latest
+    needs: [linting, codeql]
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline --progress=false
+
+      - name: Run Chromatic tests
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy_preview_demo:
+    name: Deploy Preview (Demo)
+    runs-on: ubuntu-latest
+    needs: [linting, codeql, unit_testing_demo]
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline --progress=false
+
+      - name: Build demo
+        run: npx nx build demo
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2
+        with:
+          publish-dir: './dist/apps/demo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.DEMO_NETLIFY_ID }}
