@@ -178,7 +178,7 @@
     "@angular/forms": "~16.2.0",
     "@angular/platform-browser": "~16.2.0",
     "@angular/platform-browser-dynamic": "~16.2.0",
-    "@angular/router": "~16.2.0",
+    "@angular/router": "~18.0.5",
     "@docusaurus/core": "2.4.3",
     "@docusaurus/preset-classic": "2.4.3",
     "@mdx-js/react": "^3.0.0",
