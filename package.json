@@ -75,7 +75,7 @@
     "@nx/storybook": "18.0.6",
     "@nx/vite": "18.0.6",
     "@nx/web": "18.0.6",
-    "@nx/webpack": "18.0.6",
+    "@nx/webpack": "19.3.2",
     "@nx/workspace": "18.0.6",
     "@playwright/test": "^1.39.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
